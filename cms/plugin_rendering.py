@@ -91,7 +91,7 @@ def render_placeholder(placeholder, context_to_copy, name_fallback="Placeholder"
     context = context_to_copy 
     context.push()
     request = context['request']
-    plugins = [plugin for plugin in get_plugins(request, placeholder)]
+    plugins = [plugin for plugin in get_plugins(request, placeholder, context.get('lang',None))]
     page = get_page_from_placeholder_if_exists(placeholder)
     if page:
         template = page.template
