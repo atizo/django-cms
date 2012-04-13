@@ -59,6 +59,7 @@ def update_title(title):
 def pre_save_title(instance, raw, **kwargs):
     """Save old state to instance and setup path
     """
+    if raw: return
     
     menu_pool.clear(instance.page.site_id)
     
@@ -83,6 +84,9 @@ signals.pre_save.connect(pre_save_title, sender=Title, dispatch_uid="cms.title.p
 
 
 def post_save_title(instance, raw, created, **kwargs):
+    
+    if raw: return
+    
     # Update descendants only if path changed
     application_changed = False
     
@@ -211,8 +215,9 @@ def post_save_page(instance, **kwargs):
             update_title(title)
             title.save()
 
-def update_placeholders(instance, **kwargs):
-    instance.rescan_placeholders()
+def update_placeholders(instance, raw, **kwargs):
+    if not raw:
+        instance.rescan_placeholders()
 
 def invalidate_menu_cache(instance, **kwargs):
     menu_pool.clear(instance.site_id)
@@ -242,7 +247,7 @@ def pre_delete_group(instance, **kwargs):
         clear_user_permission_cache(user)
 
 def pre_save_pagepermission(instance, raw, **kwargs):
-    if instance.user:
+    if not raw and instance.user:
         clear_user_permission_cache(instance.user)
 
 def pre_delete_pagepermission(instance, **kwargs):
