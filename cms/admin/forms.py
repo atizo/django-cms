@@ -11,6 +11,7 @@ from cms.utils.permissions import (get_current_user, get_subordinate_users,
 from cms.utils.urlutils import any_path_re
 from django import forms
 from django.conf import settings
+from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
@@ -188,7 +189,9 @@ class PagePermissionInlineAdminForm(forms.ModelForm):
     level or under him in choosen page tree, and users which were created by him, 
     but aren't assigned to higher page level than current user.
     """
-    user = forms.ModelChoiceField('user', label=_('user'), widget=UserSelectAdminWidget, required=False)
+    user = forms.ModelChoiceField('user', label=_('user'),
+                                  widget=ForeignKeyRawIdWidget(PagePermission._meta.get_field('user').rel),
+                                  required=False)
     page = forms.ModelChoiceField(Page, label=_('user'), widget=HiddenInput(), required=True)
     
     def __init__(self, *args, **kwargs):
