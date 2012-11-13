@@ -41,19 +41,26 @@ def details(request, slug):
     # ported here. So no resolution if the slug is ''.
     if (current_language not in available_languages):
         if settings.CMS_LANGUAGE_FALLBACK:
-            # If we didn't find the required page in the requested (current) 
-            # language, let's try to find a suitable fallback in the list of 
-            # fallback languages (CMS_LANGUAGE_CONF)
-            for alt_lang in get_fallback_languages(current_language):
-                if alt_lang in available_languages:
-                    alt_url = page.get_absolute_url(language=alt_lang, fallback=True)
-                    path = '/%s%s' % (alt_lang, alt_url)
-                    # In the case where the page is not available in the
-                    # preferred language, *redirect* to the fallback page. This
-                    # is a design decision (instead of rendering in place)).
-                    return HttpResponseRedirect(path)
-        # There is a page object we can't find a proper language to render it 
-        _handle_no_page(request, slug)
+            fallback_languages = get_fallback_languages(current_language)
+            if settings.CMS_SILENT_LANGUAGE_FALLBACK:
+                try:
+                    current_language = list(set(fallback_languages).intersection(set(available_languages)))[0]
+                except IndexError:
+                    _handle_no_page(request, slug)
+            else:
+                # If we didn't find the required page in the requested (current)
+                # language, let's try to find a suitable fallback in the list of
+                # fallback languages (CMS_LANGUAGE_CONF)
+                for alt_lang in fallback_languages:
+                    if alt_lang in available_languages:
+                        alt_url = page.get_absolute_url(language=alt_lang, fallback=True)
+                        path = '/%s%s' % (alt_lang, alt_url)
+                        # In the case where the page is not available in the
+                        # preferred language, *redirect* to the fallback page. This
+                        # is a design decision (instead of rendering in place)).
+                        return HttpResponseRedirect(path)
+                # There is a page object we can't find a proper language to render it
+                _handle_no_page(request, slug)
 
     if apphook_pool.get_apphooks():
         # There are apphooks in the pool. Let's see if there is one for the

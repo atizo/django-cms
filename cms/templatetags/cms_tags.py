@@ -149,7 +149,7 @@ def get_placeholder_content(context, request, current_page, name, inherit):
         placeholder = _get_placeholder(current_page, page, context, name)
         if placeholder is None:
             continue
-        if not get_plugins(request, placeholder):
+        if not get_plugins(request, placeholder, context.get('lang',None)):
             continue
         content = render_placeholder(placeholder, context, name)
         if content:
