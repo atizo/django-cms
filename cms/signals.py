@@ -163,6 +163,9 @@ def post_save_user_group(instance, raw, created, **kwargs):
     
     requires: CurrentUserMiddleware
     """
+
+    if raw: return
+
     from cms.utils.permissions import get_current_user
     # read current user from thread locals
     creator = get_current_user()
