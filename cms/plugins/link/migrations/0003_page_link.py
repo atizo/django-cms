@@ -28,7 +28,7 @@ class Migration:
             'cmsplugin_ptr': ('models.OneToOneField', ['CMSPlugin'], {}),
             'name': ('models.CharField', ['_("name")'], {'max_length': '40'}),
             'page_link': ('models.ForeignKey', ['Page'], {'null': 'True', 'verbose_name': '_("page")', 'blank': 'True'}),
-            'url': ('models.URLField', ['_("link")'], {'blank': 'True', 'null': 'True', 'verify_exists': 'True'})
+            'url': ('models.URLField', ['_("link")'], {'blank': 'True', 'null': 'True'})
         }
     }
     

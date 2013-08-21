@@ -13,7 +13,7 @@ class Migration:
         
         # Adding model 'Link'
         db.create_table('link_link', (
-            ('link', models.URLField(_("link"), blank=True, null=True, verify_exists=True)),
+            ('link', models.URLField(_("link"), blank=True, null=True)),
             ('cmsplugin_ptr', models.OneToOneField(orm['cms.CMSPlugin'])),
             ('name', models.CharField(_("name"), max_length=40)),
             ('page', models.ForeignKey(orm['cms.Page'], null=True, verbose_name=_("page"), blank=True)),
